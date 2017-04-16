@@ -1,11 +1,12 @@
 import java.rmi.RemoteException;
-
 import java.lang.Integer;
 import java.util.Scanner;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
+
 
 public class Client {
 
-	private Client(){
+	public Client(){
 		super();
 	}
 
