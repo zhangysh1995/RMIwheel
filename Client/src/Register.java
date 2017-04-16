@@ -9,11 +9,11 @@ import javax.swing.*;
 public class Register {
 
     public static void run(JTextArea JTAinfo, String host, int port) {
-        for( int i = 0; i < 50; i++) {
+        for( int i = 0; i < 1000; i++) {
             String testString = stringGenerator();
             ClientForBulk cfb = new ClientForBulk(host, port, testString, testString);
             Thread thread = new Thread(cfb);
-            JTAinfo.setText(JTAinfo.getText() + "\n" + (i+1) + "/50 test, username & pin is " + testString);
+            JTAinfo.setText(JTAinfo.getText() + "\n" + (i+1) + "/1000 test, username & pin is " + testString);
             thread.run();
         }
     }

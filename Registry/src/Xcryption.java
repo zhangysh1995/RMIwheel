@@ -2,8 +2,6 @@
  * Created by KellyZhang on 2017/3/20.
  */
 
-//import org.apache.commons.codec.binary.Hex;
-
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.charset.Charset;

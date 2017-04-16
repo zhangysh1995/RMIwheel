@@ -7,19 +7,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.util.concurrent.Semaphore;
 
 public class DBconnection {
     static Connection connection;
+    static Semaphore sf = new Semaphore(50, true);
 
     public boolean connect() {
 
         try {
+            sf.acquire();
             connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1/rmi", "root", "rmitest");
         } catch (SQLException e) {
             System.out.println("Exception when connecting database");
             printException(e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
+        sf.release();
         return true;
     }
 
@@ -28,6 +34,7 @@ public class DBconnection {
             Statement stt = connection.createStatement();
             stt.execute("INSERT INTO User VALUES('" + user + "', '" + pin + "')");
             stt.close();
+            connection.close();
         } catch (SQLException e) {
 
             System.out.println("Exception when adding new user");
@@ -49,6 +56,7 @@ public class DBconnection {
             //System.out.println("result = " + result + " in connection");
             rs.close();
             stt.close();
+            connection.close();
         } catch (SQLException e) {
             System.out.println("Exception when finding user");
             printException(e);

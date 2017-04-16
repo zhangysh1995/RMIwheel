@@ -61,7 +61,7 @@ public class MainFrame extends JFrame{
                         JOptionPane.ERROR_MESSAGE);
             }
             else {
-                JTAinfo.setText(JTAinfo.getText() + "\nStart to concurrency test....");
+                JTAinfo.setText(JTAinfo.getText() + "\nStart to test concurrency....");
                 Register.run(JTAinfo, JTFhost.getText(), Integer.parseInt(JTFport.getText()));
             }
         }
