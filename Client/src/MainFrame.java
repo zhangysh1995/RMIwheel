@@ -10,7 +10,8 @@ import java.awt.event.ActionListener;
 
 
 public class MainFrame extends JFrame{
-    private static Register register = new Register();
+    public JTextField JTFhost;
+    public JTextField JTFport;
     public JTextArea JTAinfo;
 
     public MainFrame(String name) {
@@ -19,7 +20,7 @@ public class MainFrame extends JFrame{
 
         // add input display
         JLabel JLhost = new JLabel("Host: ");
-        JTextField JTFhost = new JTextField();
+        JTFhost = new JTextField();
         JPanel JPhost = new JPanel();
         JPhost.setLayout(new BorderLayout());
         JPhost.add(JLhost, BorderLayout.WEST);
@@ -31,7 +32,7 @@ public class MainFrame extends JFrame{
         JPhost.add(JBstart, BorderLayout.EAST);
 
         JLabel JLport = new JLabel("Port: ");
-        JTextField JTFport = new JTextField();
+        JTFport = new JTextField();
         JPanel JPport = new JPanel();
         JPport.setLayout(new BorderLayout());
         JPport.add(JLport, BorderLayout.WEST);
@@ -53,9 +54,16 @@ public class MainFrame extends JFrame{
 
     private class JBstartListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-
-            JTAinfo.setText(JTAinfo.getText() + "\nThis operating....");
-            register.run();
+            if (JTFhost.getText().equals("") || JTFport.getText().equals("")) {
+                JOptionPane.showMessageDialog(null,
+                        "Please fill host and port before continue!!",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                JTAinfo.setText(JTAinfo.getText() + "\nStart to concurrency test....");
+                Register.run(JTAinfo, JTFhost.getText(), Integer.parseInt(JTFport.getText()));
+            }
         }
     }
 

@@ -34,7 +34,7 @@ public class SimpleRegistry {
 	public Object lookup(String serviceName) throws IOException {
 		Socket soc = new Socket(Host, Port);
 
-		System.out.println("socket made.");
+//		System.out.println("socket made.");
 
 		// get TCP streams and wrap them.
 		//BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
