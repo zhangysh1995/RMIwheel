@@ -137,9 +137,9 @@ public class SimpleRegistryServer {
 
 					// get method to be invoked
 					Method method = Operation.class.getMethod((String)oint.readObject(), parameterTypes);
-					// invoke method on object
+
 					Operation operation = new Operation();
-					// write result back to client
+					// invoke method on object & write result back to client
 					oot.writeObject(method.invoke(operation, arg));
 
 					oint.close();
