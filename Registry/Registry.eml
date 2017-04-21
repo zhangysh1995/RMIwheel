@@ -5,6 +5,5 @@
 	<contentEntry url="file://$MODULE_DIR$"/>
 	<levels>
 		<level name="mysql-connector-java-5.1.41-bin" value="project"/>
-		<level name="commons-codec-1.1" value="project"/>
 	</levels>
 </component>

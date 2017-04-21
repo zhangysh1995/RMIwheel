@@ -13,7 +13,7 @@ public class Register {
             String testString = stringGenerator();
             ClientForBulk cfb = new ClientForBulk(host, port, testString, testString);
             Thread thread = new Thread(cfb);
-            JTAinfo.setText(JTAinfo.getText() + "\n" + (i+1) + "/1000 test, username & pin is " + testString);
+            JTAinfo.setText(JTAinfo.getText() + "\n" + (i+1) + "/50 test, username & pin is " + testString);
             thread.run();
         }
     }

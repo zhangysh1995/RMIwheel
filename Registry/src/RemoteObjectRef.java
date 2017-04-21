@@ -6,11 +6,8 @@ import java.rmi.Remote;
 public class RemoteObjectRef implements Serializable{
 	String IP_adr;
 	int Port;
-//	static int Obj_num = 0;
 	int Obj_Key;
 	String Remote_Interface_Name;
-
-//	Class <?> c;
 
 	// ror constructor
 	public RemoteObjectRef(String ip, int port, int obj_key, String riname) {
@@ -26,7 +23,6 @@ public class RemoteObjectRef implements Serializable{
 		stream.writeObject(Remote_Interface_Name);
 		stream.writeInt(Port);
 		stream.writeInt(Obj_Key);
-//		stream.writeObject(c);
 	}
 
 	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -34,29 +30,13 @@ public class RemoteObjectRef implements Serializable{
 		Remote_Interface_Name = (String) stream.readObject();
 		Port = stream.readInt();
 		Obj_Key = stream.readInt();
-//		c = (Class) stream.readObject();
 	}
 
 	public Object getObejct() {
-		Object o = null;
-
-//		Constructor <?> constructor = null;
-//		try {
-//			constructor = c.getConstructor();
-//		} catch (NoSuchMethodException e) {
-//			e.printStackTrace();
-//		}
-//		try {
-//			o = constructor.newInstance();
-//		} catch (InstantiationException e) {
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			e.printStackTrace();
-//		} catch (InvocationTargetException e) {
-//			e.printStackTrace();
-//		}
-
-		o = new OperationStub();
+		// initialize proxy to send to server
+		OperationProxy op = new OperationProxy();
+		UserOperation o = (UserOperation) Proxy.newProxyInstance(UserOperation.class.getClassLoader(),
+							new Class[] { UserOperation.class }, op);
 		return o;
 	}
 }

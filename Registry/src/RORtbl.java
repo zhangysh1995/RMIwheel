@@ -1,6 +1,7 @@
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 // This is simple. ROR needs a new object key for each remote object (or its skeleton). 
 // This can be done easily, for example by using a counter.
@@ -8,11 +9,11 @@ import java.util.*;
 
 public class RORtbl {
     // create a table of keys (service names) and ROR.
-    Hashtable<String, RemoteObjectRef> table;
+    ConcurrentHashMap<String, RemoteObjectRef> table;
 
     // make a new table. 
     public RORtbl() {
-        table = new Hashtable<String, RemoteObjectRef>();
+        table = new ConcurrentHashMap<String, RemoteObjectRef>();
     }
 
     public void addObj(String serviceName, RemoteObjectRef o) {

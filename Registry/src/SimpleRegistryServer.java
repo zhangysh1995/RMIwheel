@@ -1,3 +1,4 @@
+import java.lang.reflect.*;
 import java.rmi.Remote;
 import java.util.*;
 import java.net.*;
@@ -28,8 +29,7 @@ public class SimpleRegistryServer {
 		// create new local registry
 		SimpleRegistry registry = LocateSimpleRegistry.getRegistry();
 		// prepare remote reference
-		Operation operation = new Operation();
-		RemoteObjectRef uo = new RemoteObjectRef("127.0.0.1", 1099, 0, "OperationStub");
+		RemoteObjectRef uo = new RemoteObjectRef("127.0.0.1", 1099, 0, "userOperation");
 //		// add remote reference to table
 		registry.rebind("userOperation", uo);
 
@@ -109,18 +109,44 @@ public class SimpleRegistryServer {
 
 			} else if (command.equals("invoke")){
 				System.out.println("Invocation was received");
-				String method = in.readLine();
-				String user = in.readLine();
-				String pin = in.readLine();
-				System.out.println("method: " + method + " user: " + user + " pin: " + pin);
-				boolean result;
-				if (method.equals("login"))
-					result = operation.login(user, pin);
-				else
-					result = operation.register(user, pin);
+//				String method = in.readLine();
+//				String user = in.readLine();
+//				String pin = in.readLine();
+//				System.out.println("method: " + method + " user: " + user + " pin: " + pin);
+//				boolean result;
+//				if (method.equals("login"))
+//					result = operation.login(user, pin);
+//				else
+//					result = operation.register(user, pin);
 
 //				System.out.println("Result is: " + result);
-				out.println(result);
+//				out.println(result);
+
+				// using proxy to invoke
+				try {
+					ObjectInputStream oint = new ObjectInputStream(newsoc.getInputStream());
+					ObjectOutputStream oot = new ObjectOutputStream(newsoc.getOutputStream());
+
+					// get method parameter types
+					Object[] arg = (Object [])oint.readObject();
+					Class<?>[] parameterTypes = new Class<?>[arg.length];
+					for (int i = 0; i < arg.length ; i++) {
+						parameterTypes[i] = arg[i].getClass();
+//						System.out.print(arg[i].getClass());
+					}
+
+					// get method to be invoked
+					Method method = Operation.class.getMethod((String)oint.readObject(), parameterTypes);
+					// invoke method on object
+					Operation operation = new Operation();
+					// write result back to client
+					oot.writeObject(method.invoke(operation, arg));
+
+					oint.close();
+					oot.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				System.out.println("Required method was invoked, result was sent to client.");
 			} else {
 				System.out.println("I got an imcomprehensive message.\n");

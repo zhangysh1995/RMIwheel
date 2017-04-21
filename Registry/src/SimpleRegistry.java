@@ -34,10 +34,7 @@ public class SimpleRegistry {
 	public Object lookup(String serviceName) throws IOException {
 		Socket soc = new Socket(Host, Port);
 
-//		System.out.println("socket made.");
-
 		// get TCP streams and wrap them.
-		//BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 		PrintWriter out = new PrintWriter(soc.getOutputStream(), true);
 
 		// it is locate request, with a service name.

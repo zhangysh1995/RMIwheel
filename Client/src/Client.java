@@ -95,6 +95,10 @@ public class Client {
 			SimpleRegistry registry = LocateSimpleRegistry.getRegistry(args[0], Integer.parseInt(args[1]));
 			UserOperation stub = (UserOperation)registry.lookup("userOperation");
 
+			if (stub == null) {
+				System.out.println("Null pointer to stub");
+				System.exit(-1);
+			}
 			Client client = new Client();
 			client.run(stub);
 		} catch (Exception e) {
