@@ -4,8 +4,8 @@ import java.net.Socket;
 /**
  * Created by KellyZhang on 2017/4/7.
  */
-public class OperationStub implements UserOperation{
-    Socket s;
+public class OperationStub {
+        Socket s;
     PrintWriter out;
     BufferedReader in;
 

@@ -1,10 +1,12 @@
 import java.rmi.RemoteException;
 import java.lang.Integer;
+import java.util.Enumeration;
 import java.util.Scanner;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 
 public class Client {
+	static Scanner input = new Scanner(System.in);
 
 	public Client(){
 		super();
@@ -60,14 +62,61 @@ public class Client {
 			}
 		}
 
+		operations(stub);
 	}
 
+	public void operations(UserOperation stub){
+		String dest;
+		String name;
+		String text;
+
+		Enumeration<String> topics = stub.getTopics();
+		System.out.println(java.util.Arrays.asList(topics));
+
+		while (true) {
+			System.out.println("Choose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");
+			int choice = input.nextInt();
+			switch (choice) {
+				case 1:
+					System.out.println("Enter topic: ");
+					dest = input.nextLine();
+					System.out.println("Enter your name: ");
+					name = input.nextLine();
+					stub.subscribe(dest, name);
+					break;
+				case 2:
+					System.out.println("Enter topic: ");
+					dest = input.nextLine();
+					System.out.println("Enter message: ");
+					text = input.nextLine();
+					stub.publish(dest, text);
+					break;
+				case 3:
+					System.out.println("Enter your name: ");
+					name = input.nextLine();
+					Consumer consumer = stub.receive(name);
+					consumer.receive();
+					break;
+				case 4:
+					System.out.println("Enter topic: ");
+					dest = input.nextLine();
+					System.out.println("Enter your name: ");
+					name = input.nextLine();
+					stub.newTopic(dest, name);
+					break;
+				case 5:
+					System.exit(0);
+				default:
+					break;
+			}
+		}
+	}
 	// start client
 	private void run(UserOperation stub){
 		System.out.println("===== Welcome to e-shop! Please choose your operation: =====");
 		System.out.println("1. Login\n2. Register");
 		System.out.println("Your choice: ");
-		Scanner input = new Scanner(System.in);
+
 
 		while (true) {
 			int choose = input.nextInt();

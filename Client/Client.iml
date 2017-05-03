@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Registry" />
     <orderEntry type="library" name="commons-lang3-3.5" level="project" />
+    <orderEntry type="module" module-name="Observer" />
   </component>
 </module>
