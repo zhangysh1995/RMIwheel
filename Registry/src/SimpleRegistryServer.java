@@ -26,6 +26,7 @@ public class SimpleRegistryServer {
 		ServerSocket serverSoc = new ServerSocket(port);
 		System.out.println("server socket created.\n");
 
+		Operation operation = new Operation();
 		// create new local registry
 		SimpleRegistry registry = LocateSimpleRegistry.getRegistry();
 		// prepare remote reference
@@ -138,7 +139,6 @@ public class SimpleRegistryServer {
 					// get method to be invoked
 					Method method = Operation.class.getMethod((String)oint.readObject(), parameterTypes);
 
-					Operation operation = new Operation();
 					// invoke method on object & write result back to client
 					oot.writeObject(method.invoke(operation, arg));
 
