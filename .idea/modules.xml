@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Client/Client.iml" filepath="$PROJECT_DIR$/Client/Client.iml" />
-      <module fileurl="file://$PROJECT_DIR$//Observer.iml" filepath="$PROJECT_DIR$//Observer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Observer.iml" filepath="$PROJECT_DIR$/Observer.iml" />
       <module fileurl="file://$PROJECT_DIR$/RMIwheel.iml" filepath="$PROJECT_DIR$/RMIwheel.iml" />
       <module fileurl="file://$PROJECT_DIR$/Registry/Registry.iml" filepath="$PROJECT_DIR$/Registry/Registry.iml" />
       <module fileurl="file://$PROJECT_DIR$/Tests/Tests.iml" filepath="$PROJECT_DIR$/Tests/Tests.iml" />

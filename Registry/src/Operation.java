@@ -1,6 +1,5 @@
 import java.io.Serializable;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.jms.JMSException;
 
@@ -36,6 +35,11 @@ public class Operation implements UserOperation, Serializable {
     }
 
     public Enumeration<String> getTopics() {
+//        if(!topics.isEmpty()){
+//            Enumeration<String> topic = null;
+//            return topic;
+//        }
+//        else
         return topics.keys();
     }
 

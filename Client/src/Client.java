@@ -45,17 +45,15 @@ public class Client {
 		if (type == operation.register) {
 			if (result) {
 				System.out.println("\nRegister successfully, you can now start shopping.");
-				System.exit(0);
 			} else {
 				System.out.println("Internal Error.");
 				System.exit(-1);
 			}
 		}
 
-		if (type == operation.login) {
+		else if (type == operation.login) {
 			if (result) {
 				System.out.println("\nLogin successfully!");
-				System.exit(0);
 			} else {
 				System.out.println("WRONG username or password");
 				System.exit(0);
@@ -71,7 +69,9 @@ public class Client {
 		String text;
 
 		Enumeration<String> topics = stub.getTopics();
-		System.out.println(java.util.Arrays.asList(topics));
+		if (topics!=null) {
+			System.out.println(java.util.Arrays.asList(topics));
+		}
 
 		while (true) {
 			System.out.println("Choose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");

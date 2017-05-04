@@ -144,10 +144,19 @@ public class SimpleRegistryServer {
 
 					oint.close();
 					oot.close();
-				} catch (Exception e) {
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Required method was invoked, result was sent to client.");
+				System.out.println("Required method was invoked, result was sent to client.\n");
+
 			} else {
 				System.out.println("I got an imcomprehensive message.\n");
 			}
