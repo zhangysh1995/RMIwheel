@@ -139,11 +139,15 @@ public class SimpleRegistryServer {
 					// get method to be invoked
 					Method method = Operation.class.getMethod((String)oint.readObject(), parameterTypes);
 
+					Object result = method.invoke(operation, arg);
+
 					// invoke method on object & write result back to client
-					oot.writeObject(method.invoke(operation, arg));
+						oot.writeObject(result);
 
 					oint.close();
 					oot.close();
+				} catch (EOFException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {

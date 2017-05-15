@@ -1,12 +1,6 @@
+import javax.jms.*;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;  
-  
-import javax.jms.Connection;
-import javax.jms.JMSException;  
-import javax.jms.Message;  
-import javax.jms.MessageConsumer;  
-import javax.jms.Session;  
-import javax.jms.TextMessage;  
+import java.util.concurrent.Executors;
   
 public class Consumer {
     private String name;  
@@ -48,6 +42,7 @@ public class Consumer {
                 }  
             }  
         });  
-    }  
+    }
+
   
 }  

@@ -8,7 +8,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class ConnFactory {  
     
-    private ConnectionFactory factory;  
+    static private ActiveMQConnectionFactory factory;
       
     public ConnFactory(){  
 //        try {  
@@ -19,7 +19,7 @@ public class ConnFactory {
 //        }  
     }  
       
-    public Connection createConnection() throws JMSException{  
-        return factory.createConnection();  
+    public ActiveMQConnection createConnection() throws JMSException{
+        return  (ActiveMQConnection) factory.createConnection();
     }     
 }  

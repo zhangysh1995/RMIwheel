@@ -1,15 +1,35 @@
+import org.apache.activemq.advisory.DestinationSource;
+import org.apache.activemq.command.ActiveMQQueue;
+
+import javax.jms.*;
 import java.rmi.RemoteException;
-import java.lang.Integer;
-import java.util.Enumeration;
 import java.util.Scanner;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class Client {
 	static Scanner input = new Scanner(System.in);
+	static ConnFactory conn = new ConnFactory();
+    static MessageProducer producer;
+	static private MessageConsumer consumer;
+	private Session session;
+	private Executor executor = Executors.newFixedThreadPool(10);
+	String user;
 
-	public Client(){
-		super();
+    public Client(){
+	    try {
+            Producer producer1 = new Producer(conn.createConnection(), "Topic 1", "Producer 1");
+            producer1.start();
+            Producer producer2 = new Producer(conn.createConnection(), "Topic 2", "Producer 2");
+            producer2.start();
+
+            producer = conn.createConnection().createSession(false, Session.AUTO_ACKNOWLEDGE).createProducer(null);
+        } catch (JMSException e) {
+	        System.out.println("Exception when intializing producers");
+	        e.printStackTrace();
+        }
 	}
 
 	// initialize client operation
@@ -22,7 +42,7 @@ public class Client {
 	public void request(operation type, UserOperation stub){
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter your user name: ");
-		String user = input.nextLine();
+		user = input.nextLine();
 		System.out.println("Enter your password: ");
 		String pin = input.nextLine();
 
@@ -68,50 +88,95 @@ public class Client {
 		String name;
 		String text;
 
-		Enumeration<String> topics = stub.getTopics();
-		if (topics!=null) {
-			System.out.println(java.util.Arrays.asList(topics));
-		}
-
 		while (true) {
-			System.out.println("Choose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");
-			int choice = input.nextInt();
-			switch (choice) {
-				case 1:
-					System.out.println("Enter topic: ");
-					dest = input.nextLine();
-					System.out.println("Enter your name: ");
-					name = input.nextLine();
-					stub.subscribe(dest, name);
-					break;
-				case 2:
-					System.out.println("Enter topic: ");
-					dest = input.nextLine();
-					System.out.println("Enter message: ");
-					text = input.nextLine();
-					stub.publish(dest, text);
-					break;
-				case 3:
-					System.out.println("Enter your name: ");
-					name = input.nextLine();
-					Consumer consumer = stub.receive(name);
-					consumer.receive();
-					break;
-				case 4:
-					System.out.println("Enter topic: ");
-					dest = input.nextLine();
-					System.out.println("Enter your name: ");
-					name = input.nextLine();
-					stub.newTopic(dest, name);
-					break;
-				case 5:
-					System.exit(0);
-				default:
-					break;
+			try {
+				DestinationSource ds = conn.createConnection().getDestinationSource();
+				Set<ActiveMQQueue> queues = ds.getQueues();
+
+				for (ActiveMQQueue queue : queues) {
+					System.out.println(queue.getQueueName());
+				}
+			}catch(JMSException e) {
+				e.printStackTrace();
 			}
+
+			System.out.println("Choose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");
+            int choice = input.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter topic: ");
+                    dest = input.next();
+                    System.out.println("Enter your name: ");
+                    name = input.next();
+                    try {
+						subscribe(conn.createConnection(), dest, name);
+					} catch (JMSException e) {
+                    	e.printStackTrace();
+					}
+                    break;
+                case 2:
+                    System.out.println("Enter topic: ");
+                    dest = input.next();
+                    System.out.println("Enter message: ");
+                    text = input.next();
+                    publish(dest, text);
+                    break;
+                case 3:
+//                    System.out.println("Enter your name: ");
+//                    name = input.next();
+                    try {
+						if (consumer == null) System.out.println("You don't have any subsriptions yet.");
+						else consumer.receive();
+					} catch (JMSException e) {
+                    	e.printStackTrace();
+					}
+                    break;
+                case 4:
+                    System.out.println("Enter topic: ");
+                    dest = input.next();
+                    System.out.println("Enter your name: ");
+                    name = input.next();
+                    try {
+                        Producer producer = new Producer(conn.createConnection(), dest, name);
+                        producer.start();
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 5:
+                    System.exit(0);
+                default:
+                    break;
+            }
 		}
 	}
-	// start client
+
+	private void subscribe(Connection conn, String dest, String name) {
+		try {
+			conn.setClientID(name);
+			conn.start();
+			session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			consumer = session.createDurableSubscriber(session.createTopic(dest), name);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
+	private void publish(String dest, String text) {
+	    try {
+            session = conn.createConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue(dest);
+            //Added as a producer
+            javax.jms.MessageProducer producer = session.createProducer(queue);
+            // Create and send the message
+            TextMessage msg = session.createTextMessage();
+            msg.setText(text);
+            producer.send(msg);
+        } catch (JMSException e) {
+	        e.printStackTrace();
+        }
+    }
+
+ 	// start client
 	private void run(UserOperation stub){
 		System.out.println("===== Welcome to e-shop! Please choose your operation: =====");
 		System.out.println("1. Login\n2. Register");

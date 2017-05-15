@@ -22,7 +22,7 @@ public class Producer {
   
     public void start() throws JMSException {  
         //conn 可以不连接,当发送消息是会自动建立连接。  
-        conn.start();  
+        conn.start();
         session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);  
         producer = session.createProducer(session.createTopic(dest));  
     }  

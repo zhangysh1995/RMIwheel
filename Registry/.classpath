@@ -4,7 +4,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mysql-connector-java-5.1.41-bin"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-codec-1.1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Observer"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/activemq-all-5.14.5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
