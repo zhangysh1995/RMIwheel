@@ -15,7 +15,7 @@ public class ConnFactory {
 //            Context context = new JndiFactory().getJndiContext();  
 //            this.factory = (ConnectionFactory) context.lookup("con1");  
 //        } catch (NamingException e) {             
-            this.factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);  
+            this.factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
 //        }  
     }  
       

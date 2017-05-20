@@ -1,8 +1,8 @@
 import org.apache.activemq.advisory.DestinationSource;
-import org.apache.activemq.command.ActiveMQQueue;
-
+import org.apache.activemq.command.ActiveMQTopic;
 import javax.jms.*;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -13,7 +13,7 @@ public class Client {
 	static Scanner input = new Scanner(System.in);
 	static ConnFactory conn = new ConnFactory();
     static MessageProducer producer;
-	static private MessageConsumer consumer;
+	static private ArrayList<Consumer> consumers = new ArrayList<Consumer>(5);
 	private Session session;
 	private Executor executor = Executors.newFixedThreadPool(10);
 	String user;
@@ -80,21 +80,20 @@ public class Client {
 			}
 		}
 
-		operations(stub);
+		operations(user);
 	}
 
-	public void operations(UserOperation stub){
+	public void operations(String user){
 		String dest;
-		String name;
 		String text;
 
 		while (true) {
 			try {
 				DestinationSource ds = conn.createConnection().getDestinationSource();
-				Set<ActiveMQQueue> queues = ds.getQueues();
+				Set<ActiveMQTopic> topics = ds.getTopics();
 
-				for (ActiveMQQueue queue : queues) {
-					System.out.println(queue.getQueueName());
+				for (ActiveMQTopic topic : topics) {
+					System.out.println(topic.getTopicName());
 				}
 			}catch(JMSException e) {
 				e.printStackTrace();
@@ -106,10 +105,10 @@ public class Client {
                 case 1:
                     System.out.println("Enter topic: ");
                     dest = input.next();
-                    System.out.println("Enter your name: ");
-                    name = input.next();
+//                    System.out.println("Enter your name: ");
+//                    user = input.next();
                     try {
-						subscribe(conn.createConnection(), dest, name);
+						subscribe(conn.createConnection(), dest, user);
 					} catch (JMSException e) {
                     	e.printStackTrace();
 					}
@@ -119,25 +118,25 @@ public class Client {
                     dest = input.next();
                     System.out.println("Enter message: ");
                     text = input.next();
-                    publish(dest, text);
-                    break;
-                case 3:
-//                    System.out.println("Enter your name: ");
-//                    name = input.next();
                     try {
-						if (consumer == null) System.out.println("You don't have any subsriptions yet.");
-						else consumer.receive();
+						publish(conn.createConnection(), dest, text);
 					} catch (JMSException e) {
                     	e.printStackTrace();
 					}
                     break;
+                case 3:
+//                    System.out.println("Enter your name: ");
+//                    name = input.next();
+						if (consumers.isEmpty()) System.out.println("You don't have any subsriptions yet.");
+						else for (Consumer consumer : consumers) consumer.receive();
+                    break;
                 case 4:
                     System.out.println("Enter topic: ");
                     dest = input.next();
-                    System.out.println("Enter your name: ");
-                    name = input.next();
+//                    System.out.println("Enter your name: ");
+//                    user = input.next();
                     try {
-                        Producer producer = new Producer(conn.createConnection(), dest, name);
+                        Producer producer = new Producer(conn.createConnection(), dest, user);
                         producer.start();
                     } catch (JMSException e) {
                         e.printStackTrace();
@@ -154,23 +153,19 @@ public class Client {
 	private void subscribe(Connection conn, String dest, String name) {
 		try {
 			conn.setClientID(name);
-			conn.start();
 			session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			consumer = session.createDurableSubscriber(session.createTopic(dest), name);
+			Consumer consumer = new Consumer(conn, name);
+			consumer.start(dest);
+			consumers.add(consumer);
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
 	}
-	private void publish(String dest, String text) {
+	private void publish(Connection conn, String dest, String text) {
 	    try {
-            session = conn.createConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue queue = session.createQueue(dest);
-            //Added as a producer
-            javax.jms.MessageProducer producer = session.createProducer(queue);
-            // Create and send the message
-            TextMessage msg = session.createTextMessage();
-            msg.setText(text);
-            producer.send(msg);
+			Producer producer = new Producer(conn, dest, dest);
+			producer.start();
+			producer.send(text);
         } catch (JMSException e) {
 	        e.printStackTrace();
         }
