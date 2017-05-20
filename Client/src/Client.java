@@ -1,5 +1,6 @@
 import org.apache.activemq.advisory.DestinationSource;
 import org.apache.activemq.command.ActiveMQTopic;
+
 import javax.jms.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Client {
 	private Session session;
 	private Executor executor = Executors.newFixedThreadPool(10);
 	String user;
+	private int clientNum = 0;
 
     public Client(){
 	    try {
@@ -99,7 +101,7 @@ public class Client {
 				e.printStackTrace();
 			}
 
-			System.out.println("Choose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");
+			System.out.println("\nChoose one operation: 1.Subscribe 2.Publish 3.Receive 4.New Topic 5.Exit");
             int choice = input.nextInt();
             switch (choice) {
                 case 1:
@@ -152,7 +154,7 @@ public class Client {
 
 	private void subscribe(Connection conn, String dest, String name) {
 		try {
-			conn.setClientID(name);
+			conn.setClientID(name+(clientNum++));
 			session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Consumer consumer = new Consumer(conn, name);
 			consumer.start(dest);
