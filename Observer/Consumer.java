@@ -22,11 +22,13 @@ public class Consumer {
   
     public void receive() {
                     try {
-                        Message msg = consumer.receive();
+                        // shouldn't wait forever
+                        Message msg = consumer.receiveNoWait();
+
                         if (msg instanceof TextMessage) {
-                            System.out.println(name + " receive message {" + ((TextMessage)msg).getText() + "}");
+                            System.out.println("You receive message {" + ((TextMessage)msg).getText() + "}");
                         } else {
-                            System.out.println("msg: " + msg);
+                            System.out.println("No new message for topic: " + dest);
                         }
                     } catch (JMSException e) {
                         e.printStackTrace();
